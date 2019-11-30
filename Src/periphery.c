@@ -130,15 +130,14 @@ void GPIO_Init (app_config_t * p_config)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 	
-	while (p_config->firmware_version != FIRMWARE_VERSION)
-	{
-		// flash LED if firmware version doesnt match
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_12);
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-		HAL_Delay(300);
-	}
-	
-	
+
+	// while (p_config->firmware_version != FIRMWARE_VERSION)
+	// {
+	// 	// flash LED if firmware version doesnt match
+	// 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_12);
+	// 	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+	// 	HAL_Delay(300);
+	// }
 	
 	
 	// setting up GPIO according confgiguration
@@ -197,7 +196,7 @@ void GPIO_Init (app_config_t * p_config)
 			HAL_GPIO_Init(pin_config[i].port, &GPIO_InitStruct);
 		}
 		
-		else if (p_config->pins[i] == AXIS_ANALOG || p_config->pins[i] == AXIS_TO_BUTTONS)
+		else if (p_config->pins[i] == AXIS_ANALOG || p_config->pins[i] == AXIS_TO_BUTTONS || p_config->pins[i] == ADC_IN )
 		{
 			GPIO_InitStruct.Pin = pin_config[i].pin;
 			GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

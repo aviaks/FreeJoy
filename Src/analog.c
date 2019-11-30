@@ -12,16 +12,19 @@
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 TIM_HandleTypeDef htim3;
-uint16_t adc_data[MAX_AXIS_NUM];
+uint16_t adc_data[MAX_AXIS_NUM+1];
 analog_data_t analog_data[MAX_AXIS_NUM];
+analog_data_t battery_voltage;
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
-	{ADC_CHANNEL_0, 0}, {ADC_CHANNEL_1, 1}, 
+	{ADC_CHANNEL_0, 0}, {ADC_CHANNEL_1, 1},	
 	{ADC_CHANNEL_2, 2}, {ADC_CHANNEL_3, 3},
 	{ADC_CHANNEL_4, 4}, {ADC_CHANNEL_5, 5}, 
-	{ADC_CHANNEL_6, 6}, {ADC_CHANNEL_7, 7}, 
+	{ADC_CHANNEL_6, 6}, {ADC_CHANNEL_7, 7},
 };
+
+adc_channel_config_t bat_channel_config = {ADC_CHANNEL_8, 8};
 
 // Map function with separate action for each half of axis
 static uint32_t map(uint32_t x, 
@@ -83,15 +86,15 @@ void ADC_Init (app_config_t * p_config)
 	// Count ADC channels
 	for (int i=0; i<USED_PINS_NUM; i++)
 	{
-		if (p_config->pins[i] == AXIS_ANALOG || p_config->pins[i] == AXIS_ANALOG)
+		if (p_config->pins[i] == AXIS_ANALOG || p_config->pins[i] == ADC_IN)
 		{
 			channels_cnt++;
 		}
 	}
-	if (channels_cnt > MAX_AXIS_NUM)
-	{
-		_Error_Handler(__FILE__, __LINE__);
-	}
+	// if (channels_cnt > MAX_AXIS_NUM)
+	// {
+	// 	_Error_Handler(__FILE__, __LINE__);
+	// }
 	
 	// Init ADC
 	if (channels_cnt > 0)
@@ -112,7 +115,7 @@ void ADC_Init (app_config_t * p_config)
 	// Configure ADC channels
 	for (int i=0; i<USED_PINS_NUM; i++)
 	{
-		if (p_config->pins[i] == AXIS_ANALOG || p_config->pins[i] == AXIS_ANALOG)
+		if (p_config->pins[i] == AXIS_ANALOG)
 		{
 			sConfig.Channel = channel_config[i].channel;
 			sConfig.Rank = channel_config[i].number+1;
@@ -128,6 +131,15 @@ void ADC_Init (app_config_t * p_config)
 				AxisResetCalibration(p_config, channel_config[i].number);
 			}
 		}
+	}
+
+	// Configure battery ADC monitor
+	sConfig.Channel = bat_channel_config.channel;
+	sConfig.Rank = bat_channel_config.number+1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
 	}
 
 	if(HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data[0],channels_cnt) != HAL_OK) 
@@ -193,6 +205,9 @@ void AnalogGet (analog_data_t * data)
 	}
 }
 
-
+uint16_t BatteryVoltageGet ()
+{
+	return adc_data[8];	
+}
 
 

@@ -35,7 +35,7 @@ int main(void)
 {
 	uint32_t millis, prev_millis;
 	
-  HAL_Init();
+  	HAL_Init();
 	
 	SystemClock_Config();
 	
@@ -46,8 +46,7 @@ int main(void)
 
 	GPIO_Init(&config);
 	ADC_Init(&config);
-	
-  
+
 
   while (1)
   {
@@ -62,7 +61,15 @@ int main(void)
 			ButtonsGet(joy_report.button_data);
 			AnalogGet(joy_report.axis_data);	
 			POVsGet(joy_report.pov_data);
-			
+
+			uint16_t bat_voltage = BatteryVoltageGet();
+
+			if (bat_voltage > 3000) {
+				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+			} else {
+				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+			}
+
 			USBD_CUSTOM_HID_SendReport(	&hUsbDeviceFS, (uint8_t *)&(joy_report.id), sizeof(joy_report)-sizeof(joy_report.dummy));
 		}
   }
