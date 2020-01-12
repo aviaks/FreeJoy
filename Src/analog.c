@@ -8,6 +8,7 @@
 #include "analog.h"
 #include <string.h>
 #include "flash.h"
+#include "stdbool.h"
 
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
@@ -18,9 +19,9 @@ analog_data_t battery_voltage;
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
-	{ADC_CHANNEL_0, 0}, {ADC_CHANNEL_1, 1},	
+	{ADC_CHANNEL_1, 1},	{ADC_CHANNEL_0, 0},
+	{ADC_CHANNEL_4, 4}, {ADC_CHANNEL_5, 5},
 	{ADC_CHANNEL_2, 2}, {ADC_CHANNEL_3, 3},
-	{ADC_CHANNEL_4, 4}, {ADC_CHANNEL_5, 5}, 
 	{ADC_CHANNEL_6, 6}, {ADC_CHANNEL_7, 7},
 };
 
@@ -28,29 +29,40 @@ adc_channel_config_t bat_channel_config = {ADC_CHANNEL_8, 8};
 
 // Map function with separate action for each half of axis
 static uint32_t map(uint32_t x, 
-										uint32_t in_min, 
-										uint32_t in_center, 
-										uint32_t in_max, 
-										uint32_t out_min,
-										uint32_t out_center,
-										uint32_t out_max)
+					uint32_t in_min, 
+					uint32_t in_center, 
+					uint32_t in_max, 
+					uint32_t out_min,
+					uint32_t out_center,
+					uint32_t out_max,
+					bool reverse)
 {
 	uint32_t tmp8;
 	uint32_t ret;
 	
 	tmp8 = x;
 	
-	
 	if (tmp8 < in_min)	tmp8 = in_min;
 	if (tmp8 > in_max)	tmp8 = in_max;
 	
-	if (tmp8 < in_center)
-	{
-		ret = ((tmp8 - in_min) * (out_center - out_min) / (in_center - in_min) + out_min);
-  }
-	else
-	{
-		ret = ((tmp8 - in_center) * (out_max - out_center) / (in_max - in_center) + out_center);
+	if (reverse) {
+		if (tmp8 < in_center)
+		{
+			ret = ((tmp8 - in_center) * (out_min - out_center) / (in_center - in_min) + out_center);
+		}
+		else
+		{
+			ret = ((tmp8 - in_max) * (out_center - out_max) / (in_max - in_center) + out_min);	
+		}
+	} else {
+		if (tmp8 < in_center)
+		{
+			ret = ((tmp8 - in_min) * (out_center - out_min) / (in_center - in_min) + out_min);
+		}
+		else
+		{
+			ret = ((tmp8 - in_center) * (out_max - out_center) / (in_max - in_center) + out_center);
+		}
 	}
 	return ret;
 }
@@ -152,42 +164,44 @@ void AnalogProcess (app_config_t * p_config)
 {
 	uint16_t tmp16;
 	
-	for (int i=0; i<MAX_AXIS_NUM; i++)
+	for (int ch=0; ch<MAX_AXIS_NUM; ch++)
 	{
+		int i = channel_config[ch].number;
 		tmp16 = adc_data[i];
 		
-		if (p_config->axis_config[i].autocalib)
+		if (p_config->axis_config[ch].autocalib)
 		{
 			// Update calib data
-			if (tmp16 > p_config->axis_config[i].calib_max)
+			if (tmp16 > p_config->axis_config[ch].calib_max)
 			{
-				p_config->axis_config[i].calib_max = tmp16;
+				p_config->axis_config[ch].calib_max = tmp16;
 			}
-			else if (tmp16 < p_config->axis_config[i].calib_min)
+			else if (tmp16 < p_config->axis_config[ch].calib_min)
 			{
-				p_config->axis_config[i].calib_min = tmp16;
+				p_config->axis_config[ch].calib_min = tmp16;
 			}
 			
-			tmp16 = (p_config->axis_config[i].calib_max + p_config->axis_config[i].calib_min)/2;
+			tmp16 = (p_config->axis_config[ch].calib_max + p_config->axis_config[ch].calib_min)/2;
 			
-			if (p_config->axis_config[i].calib_center != tmp16 )
+			if (p_config->axis_config[ch].calib_center != tmp16 )
 			{				
-				p_config->axis_config[i].calib_center = tmp16;
+				p_config->axis_config[ch].calib_center = tmp16;
 			}
 		}
 		
 		// Scale output data
-		tmp16 = map(	adc_data[i], 
-									p_config->axis_config[i].calib_min,
-									p_config->axis_config[i].calib_center,		
-									p_config->axis_config[i].calib_max, 
-									0,
-									2047,
-									4095);
+		tmp16 = map(adc_data[i], 
+					p_config->axis_config[ch].calib_min,
+					p_config->axis_config[ch].calib_center,		
+					p_config->axis_config[ch].calib_max, 
+					0,
+					2047,
+					4095,
+					p_config->axis_config[ch].reverse);
 		
 		// TODO: Shapes
 		// analog_data[i] = ShapeFunc(i, tmp16);
-		analog_data[i] = tmp16;
+		analog_data[ch] = tmp16;
 	}	
 }
 
@@ -203,6 +217,10 @@ void AnalogGet (analog_data_t * data)
 	{
 		memcpy(data, analog_data, sizeof(analog_data));
 	}
+}
+
+uint16_t AnalogRawGet(int id) {
+	return adc_data[channel_config[id].number];
 }
 
 uint16_t BatteryVoltageGet ()

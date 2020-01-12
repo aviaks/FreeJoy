@@ -24,6 +24,11 @@ joy_report_t joy_report;
 
 //uint8_t report_data[64];
 
+bool calibration_started = false;
+
+uint16_t cal_min[8] = {4095};
+uint16_t cal_max[8] = {0};
+
 /* Private function prototypes -----------------------------------------------*/
 
 /**
@@ -31,9 +36,74 @@ joy_report_t joy_report;
   *
   * @retval None
   */
+
+
+void CalibrationLoop() {
+  GPIO_PinState state = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5);
+  
+  if (state) {
+    if (!calibration_started) {
+      for (int axis=0; axis < 8; axis++) {
+        config.axis_config[axis].calib_max = 0;
+        config.axis_config[axis].calib_min = 4095;
+        config.axis_config[axis].calib_center = AnalogRawGet(axis);
+      }
+      calibration_started = true;
+    }
+
+    for (int axis=0; axis < 8; axis++) {
+      if (AnalogRawGet(axis) > config.axis_config[axis].calib_max) {
+        config.axis_config[axis].calib_max = AnalogRawGet(axis);
+      } else if (AnalogRawGet(axis) < config.axis_config[axis].calib_min) {
+        config.axis_config[axis].calib_min = AnalogRawGet(axis);
+      }
+    }
+  } else {
+    if (calibration_started) {
+      ConfigSet(&config);
+      ConfigGet(&config);
+      calibration_started = false;
+    }
+  }
+
+
+  // if (calibration_started) {
+  //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+  // } else {
+  //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+  // }
+}
+
+void BatteryMonitoringLoop() {
+  uint16_t bat_voltage = BatteryVoltageGet();
+
+  uint16_t thr1 = 2500;
+  uint16_t thr2 = 2370;
+  uint16_t deadband = 30;
+
+  if (bat_voltage >= thr1 + deadband) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+  }
+  if ((bat_voltage >= thr2 + deadband) && (bat_voltage < thr1 - deadband)) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+  } 
+  if (bat_voltage < thr2 - deadband) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+  }
+}
+
+
 int main(void)
 {
-	uint32_t millis, prev_millis;
+	uint32_t millis;
+  uint32_t prev_millis1;
+  uint32_t prev_millis2;
 	
   	HAL_Init();
 	
@@ -41,20 +111,19 @@ int main(void)
 	
 	MX_USB_DEVICE_Init();
 	
-	ConfigSet((app_config_t *) &init_config);
+	// ConfigSet((app_config_t *) &init_config);
 	ConfigGet(&config);
 
 	GPIO_Init(&config);
 	ADC_Init(&config);
 
-
   while (1)
   {
 		millis = HAL_GetTick();
 		
-		if (millis - prev_millis > 10)
-		{
-			prev_millis = millis;
+    // 100 Hz loop
+		if (millis - prev_millis1 > 10) {
+			prev_millis1 = millis;
 			
 			joy_report.id = JOY_REPORT_ID;
 			
@@ -62,19 +131,21 @@ int main(void)
 			AnalogGet(joy_report.axis_data);	
 			POVsGet(joy_report.pov_data);
 
-			uint16_t bat_voltage = BatteryVoltageGet();
-
-			if (bat_voltage > 3000) {
-				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
-			} else {
-				HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
-			}
-
 			USBD_CUSTOM_HID_SendReport(	&hUsbDeviceFS, (uint8_t *)&(joy_report.id), sizeof(joy_report)-sizeof(joy_report.dummy));
-		}
+    }
+
+  // 2 Hz loop
+  if (millis - prev_millis2 > 500) {
+    prev_millis2 = millis;
+
+    CalibrationLoop();
+
+    BatteryMonitoringLoop();
+    
+  }
+
   }
 }
-
 
 
 

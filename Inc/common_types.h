@@ -10,6 +10,7 @@
 #define __COMMON_TYPES_H__
 
 #include "stdint.h"
+#include "stdbool.h"
 #include "common_defines.h"
 
 
@@ -46,6 +47,7 @@ typedef struct
 	uint8_t					inverted;
 	curve_shape_t 	curve_shape;
 	filter_t 				filter;
+	bool 					reverse;
 	
 } axis_config_t;
 
