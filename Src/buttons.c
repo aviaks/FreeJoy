@@ -10,9 +10,9 @@
 
 buttons_state_t 	buttons_state[MAX_BUTTONS_NUM];
 button_data_t 		buttons_data[MAX_BUTTONS_NUM/8];
-pov_data_t 				pov_data[MAX_POVS_NUM];
-uint8_t						pov_pos[MAX_POVS_NUM];
-uint8_t 					pos = 0;
+pov_data_t 			pov_data[MAX_POVS_NUM];
+uint8_t				pov_pos[MAX_POVS_NUM];
+uint8_t 			pos = 0;
 pin_config_t * 		p_pin_config;
 
 
@@ -38,32 +38,42 @@ void ButtonProcess (uint8_t pin_num, app_config_t * p_config)
 			// invert state for inverted button
 			state = !state;						
 		case BUTTON_NORMAL:
-			
+			buttons_data[(pos & 0xF8)>>3] &= ~(1 << (pos & 0x07));
+			buttons_data[(pos & 0xF8)>>3] |= (state << (pos & 0x07));
+
 			// set timestamp if state changed
-			if (!buttons_state[pos].changed && state != buttons_state[pos].prev_state)		
-			{
-				buttons_state[pos].time_last = millis;
-				buttons_state[pos].changed = 1;
-			}
-			// set state after debounce if state have not changed
-			else if (	buttons_state[pos].changed && state != buttons_state[pos].prev_state &&
-								millis - buttons_state[pos].time_last > p_config->button_debounce_ms)
-			{
-				buttons_state[pos].changed = 0;
-				buttons_state[pos].current_state = state;
-				buttons_state[pos].prev_state = buttons_state[pos].current_state;
-				buttons_state[pos].cnt += buttons_state[pos].current_state;
+			// if (state != buttons_state[pos].prev_state) {
+			// 	buttons_state[pos].current_state = state;
+			// 	buttons_data[(pos & 0xF8)>>3] &= ~(1 << (pos & 0x07));
+			// 	buttons_data[(pos & 0xF8)>>3] |= (buttons_state[pos].current_state << (pos & 0x07));
+			// 	buttons_state[pos].prev_state = state;
+			// }
+			// ---
+
+			// if (!buttons_state[pos].changed && state != buttons_state[pos].prev_state)		
+			// {
+			// 	buttons_state[pos].time_last = millis;
+			// 	buttons_state[pos].changed = 1;
+			// }
+			// // set state after debounce if state have not changed
+			// else if (	buttons_state[pos].changed && state != buttons_state[pos].prev_state &&
+			// 					millis - buttons_state[pos].time_last > p_config->button_debounce_ms)
+			// {
+			// 	buttons_state[pos].changed = 0;
+			// 	buttons_state[pos].current_state = state;
+			// 	buttons_state[pos].prev_state = buttons_state[pos].current_state;
+			// 	buttons_state[pos].cnt += buttons_state[pos].current_state;
 				
-				// set bit in buttons data
-				buttons_data[(pos & 0xF8)>>3] &= !(1 << (pos & 0x07));
-				buttons_data[(pos & 0xF8)>>3] |= (buttons_state[pos].current_state << (pos & 0x07));
-			}
-			// reset if state changed during debounce period
-			else if (	buttons_state[pos].changed && 
-								millis - buttons_state[pos].time_last > p_config->button_debounce_ms)
-			{
-				buttons_state[pos].changed = 0;
-			}
+			// 	// set bit in buttons data
+			// 	buttons_data[(pos & 0xF8)>>3] &= ~(1 << (pos & 0x07));
+			// 	buttons_data[(pos & 0xF8)>>3] |= (buttons_state[pos].current_state << (pos & 0x07));
+			// }
+			// // reset if state changed during debounce period
+			// else if (	buttons_state[pos].changed && 
+			// 					millis - buttons_state[pos].time_last > p_config->button_debounce_ms)
+			// {
+			// 	buttons_state[pos].changed = 0;
+			// }
 			break;
 			
 		case BUTTON_TOGGLE:
@@ -409,64 +419,64 @@ void ButtonsCheck (app_config_t * p_config)
 	}
 	
 	// check matrix buttons
-	for (int i=0; i<USED_PINS_NUM; i++)
-	{
-		if (p_config->pins[i] == BUTTON_COLUMN)
-		{
-			// tie Column pin to ground
-			HAL_GPIO_WritePin(p_pin_config[i].port, p_pin_config[i].pin, GPIO_PIN_RESET);
+	// for (int i=0; i<USED_PINS_NUM; i++)
+	// {
+	// 	if (p_config->pins[i] == BUTTON_COLUMN)
+	// 	{
+	// 		// tie Column pin to ground
+	// 		HAL_GPIO_WritePin(p_pin_config[i].port, p_pin_config[i].pin, GPIO_PIN_RESET);
 			
-			// check states at Rows
-			for (int k=0; k<USED_PINS_NUM; k++)
-			{
-				if (pos > MAX_BUTTONS_NUM)
-				{
-					_Error_Handler(__FILE__, __LINE__);
-				}
-				if (p_config->pins[k] == BUTTON_ROW)
-				{ 
-					ButtonProcess(k, p_config);
-					pos++;
-				}
-			}
-			// return Column pin to Hi-Z state
-			HAL_GPIO_WritePin(p_pin_config[i].port, p_pin_config[i].pin, GPIO_PIN_SET);
-		}
-	}
+	// 		// check states at Rows
+	// 		for (int k=0; k<USED_PINS_NUM; k++)
+	// 		{
+	// 			if (pos > MAX_BUTTONS_NUM)
+	// 			{
+	// 				_Error_Handler(__FILE__, __LINE__);
+	// 			}
+	// 			if (p_config->pins[k] == BUTTON_ROW)
+	// 			{ 
+	// 				ButtonProcess(k, p_config);
+	// 				pos++;
+	// 			}
+	// 		}
+	// 		// return Column pin to Hi-Z state
+	// 		HAL_GPIO_WritePin(p_pin_config[i].port, p_pin_config[i].pin, GPIO_PIN_SET);
+	// 	}
+	// }
 	
-	for (int i=0; i<MAX_POVS_NUM; i++)
-	{
-		switch (pov_pos[i])
-		{
-			case 1:
-				pov_data[i] = 0x06;
-				break;
-			case 2:
-				pov_data[i] = 0x04;
-				break;
-			case 3:
-				pov_data[i] = 0x05;
-				break;
-			case 4:
-				pov_data[i] = 0x02;
-				break;
-			case 6:
-				pov_data[i] = 0x03;
-				break;
-			case 8:
-				pov_data[i] = 0x00;
-				break;
-			case 9:
-				pov_data[i] = 0x07;
-				break;
-			case 12:
-				pov_data[i] = 0x01;
-				break;
-			default:
-				pov_data[i] = 0xFF;
-				break;
-		}
-	}
+	// for (int i=0; i<MAX_POVS_NUM; i++)
+	// {
+	// 	switch (pov_pos[i])
+	// 	{
+	// 		case 1:
+	// 			pov_data[i] = 0x06;
+	// 			break;
+	// 		case 2:
+	// 			pov_data[i] = 0x04;
+	// 			break;
+	// 		case 3:
+	// 			pov_data[i] = 0x05;
+	// 			break;
+	// 		case 4:
+	// 			pov_data[i] = 0x02;
+	// 			break;
+	// 		case 6:
+	// 			pov_data[i] = 0x03;
+	// 			break;
+	// 		case 8:
+	// 			pov_data[i] = 0x00;
+	// 			break;
+	// 		case 9:
+	// 			pov_data[i] = 0x07;
+	// 			break;
+	// 		case 12:
+	// 			pov_data[i] = 0x01;
+	// 			break;
+	// 		default:
+	// 			pov_data[i] = 0xFF;
+	// 			break;
+	// 	}
+	// }
 }
 
 void ButtonsGet (button_data_t * data)

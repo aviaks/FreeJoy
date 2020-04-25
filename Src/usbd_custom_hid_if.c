@@ -119,20 +119,13 @@
 /** Usb HID report descriptor. */
 __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DESC_SIZE] __ALIGN_END =
 {
-		0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
-    0x09, 0x05,                    // USAGE (Game Pad)
+    0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+    0x09, 0x04,                    // USAGE (Joystick)
     0xa1, 0x01,                    // COLLECTION (Application)
 
 		0x85, JOY_REPORT_ID,				 	 //		REPORT_ID	(JOY_REPORT_ID)	
-	  0x05, 0x09,                    //   USAGE_PAGE (Button)
-    0x19, 0x01,                    //   USAGE_MINIMUM (Button 1)
-    0x29, MAX_BUTTONS_NUM,         //   USAGE_MAXIMUM (Button MAX_BUTTONS_NUM)
-    0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
-    0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
-    0x75, 0x01,                    //   REPORT_SIZE (1)
-    0x95, MAX_BUTTONS_NUM,         //   REPORT_COUNT (MAX_BUTTONS_NUM)
-    0x81, 0x02,                    //   INPUT (Data,Var,Abs)
 
+		// axes data
 		0x05, 0x01,                    // 	USAGE_PAGE (Generic Desktop)
 		0x09, 0x30,                    //   USAGE (X)
     0x09, 0x31,                    //   USAGE (Y)
@@ -148,6 +141,17 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
     0x95, MAX_AXIS_NUM,       		 //   REPORT_COUNT (MAX_AXIS_NUM)
     0x81, 0x02,                    //   INPUT (Data,Var,Abs)
 		
+		// buttons data
+		0x05, 0x09,                    //   USAGE_PAGE (Button)		
+    0x19, 0x01,                    //   USAGE_MINIMUM (Button 1)
+    0x29, 0x04,                    //   USAGE_MAXIMUM (Button MAX_BUTTONS_NUM)
+    0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+    0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+    0x75, 0x01,                    //   REPORT_SIZE (1)
+    0x95, 0x04,                    //   REPORT_COUNT (MAX_BUTTONS_NUM)
+    0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+
+		// POV data
 		0x09, 0x39, 									 //   USAGE (Hat switch)
 		0x15, 0x00, 									 //   LOGICAL_MINIMUM (0)
 		0x25, 0x07, 									 //   LOGICAL_MAXIMUM (7)
@@ -162,8 +166,9 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
 		0x09, 0x39, 									 //   USAGE (Hat switch)
 		0x81, 0x02, 									 //   INPUT (Data,Var,Abs)
 		0x09, 0x39, 									 //   USAGE (Hat switch)
-		0x81, 0x02, 									 //   INPUT (Data,Var,Abs)		
-    
+		0x81, 0x02, 									 //   INPUT (Data,Var,Abs)
+		
+
 		0xc0,                          // END_COLLECTION
 
 };

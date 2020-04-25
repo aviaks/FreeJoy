@@ -28,6 +28,7 @@ void AxisResetCalibration (app_config_t * p_config, uint8_t axis_num);
 void AnalogGet (analog_data_t * data);
 uint16_t AnalogRawGet(int id);
 uint16_t BatteryVoltageGet ();
+uint16_t TempVoltageGet ();
 
 
 #endif 	/* __ANALOG_H__ */

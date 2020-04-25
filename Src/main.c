@@ -65,8 +65,6 @@ void CalibrationLoop() {
       calibration_started = false;
     }
   }
-
-
   // if (calibration_started) {
   //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
   // } else {
@@ -99,18 +97,54 @@ void BatteryMonitoringLoop() {
 }
 
 
+uint32_t som_fan_shutdown_time = 0;
+
+void TempMonitoringLoop() {
+  // Android
+  // device/rockchip/rk3399/nanopc-t4/pwm_fan.sh
+  uint16_t mh_threshold = 1500;
+  uint32_t som_enabled_time_ms = 30000;
+  uint32_t now = HAL_GetTick();
+
+  uint16_t temp_voltage = TempVoltageGet();
+
+  GPIO_PinState som_wants_fan = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
+
+  if (som_wants_fan) {
+    som_fan_shutdown_time = now + som_enabled_time_ms;
+  }
+
+  if (now < som_fan_shutdown_time || temp_voltage > mh_threshold) {
+    // Fan ON, high temperature
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+  } else {
+    // Fan OFF, normal temperature
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+  }
+}
+
+
 int main(void)
 {
 	uint32_t millis;
   uint32_t prev_millis1;
   uint32_t prev_millis2;
 	
-  	HAL_Init();
+  HAL_Init();
 	
 	SystemClock_Config();
 	
 	MX_USB_DEVICE_Init();
 	
+  // Uncomment ConfigSet for new chips which flashed first time
 	// ConfigSet((app_config_t *) &init_config);
 	ConfigGet(&config);
 
@@ -129,25 +163,20 @@ int main(void)
 			
 			ButtonsGet(joy_report.button_data);
 			AnalogGet(joy_report.axis_data);	
-			POVsGet(joy_report.pov_data);
 
 			USBD_CUSTOM_HID_SendReport(	&hUsbDeviceFS, (uint8_t *)&(joy_report.id), sizeof(joy_report)-sizeof(joy_report.dummy));
     }
 
-  // 2 Hz loop
-  if (millis - prev_millis2 > 500) {
-    prev_millis2 = millis;
+    // 2 Hz loop
+    if (millis - prev_millis2 > 500) {
+      prev_millis2 = millis;
 
-    CalibrationLoop();
-
-    BatteryMonitoringLoop();
-    
-  }
-
+      CalibrationLoop();
+      // BatteryMonitoringLoop();
+      TempMonitoringLoop();
+    }
   }
 }
-
-
 
 /**
   * @brief  This function is executed in case of error occurrence.

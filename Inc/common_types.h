@@ -116,35 +116,29 @@ typedef struct
 	uint8_t 				pin_b;
 	uint8_t 				pin_c;
 	encoder_type_t 	type;
-	
 } encoder_t;
 
 typedef struct 
 {
 	uint16_t 				firmware_version;
-	axis_config_t 	axis_config[MAX_AXIS_NUM];
+	axis_config_t 			axis_config[MAX_AXIS_NUM];
 	pin_t 					pins[USED_PINS_NUM];
 	button_t 				buttons[MAX_BUTTONS_NUM];		
-	encoder_t 			encoders[MAX_ENCODERS_NUM];
-	char 						device_name[10];
+	encoder_t 				encoders[MAX_ENCODERS_NUM];
+	char 					device_name[10];
 	uint16_t				button_debounce_ms;
 	uint16_t				toggle_press_time_ms;
 	uint16_t				encoder_press_time_ms;
-	
 }app_config_t;
 
 typedef struct
 {
 	uint8_t 		dummy;
 	uint8_t 		id;
-	uint8_t 		button_data[MAX_BUTTONS_NUM/8];
 	uint16_t 		axis_data[MAX_AXIS_NUM];
+	uint8_t 		button_data[MAX_BUTTONS_NUM/8];
 	uint8_t 		pov_data[MAX_POVS_NUM];
-	
 } joy_report_t;
-
-
-
 
 
 

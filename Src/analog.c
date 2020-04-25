@@ -13,9 +13,11 @@
 ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 TIM_HandleTypeDef htim3;
-uint16_t adc_data[MAX_AXIS_NUM+1];
+uint16_t adc_data[MAX_AXIS_NUM+2];
 analog_data_t analog_data[MAX_AXIS_NUM];
 analog_data_t battery_voltage;
+analog_data_t temp_voltage;
+
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
@@ -26,6 +28,7 @@ adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 };
 
 adc_channel_config_t bat_channel_config = {ADC_CHANNEL_8, 8};
+adc_channel_config_t temp_channel_config = {ADC_CHANNEL_9, 9};
 
 // Map function with separate action for each half of axis
 static uint32_t map(uint32_t x, 
@@ -154,6 +157,15 @@ void ADC_Init (app_config_t * p_config)
 		_Error_Handler(__FILE__, __LINE__);
 	}
 
+	// Configure temp ADC monitor
+	sConfig.Channel = temp_channel_config.channel;
+	sConfig.Rank = temp_channel_config.number+1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
+	}
+
 	if(HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data[0],channels_cnt) != HAL_OK) 
 	{
 		Error_Handler();
@@ -228,4 +240,8 @@ uint16_t BatteryVoltageGet ()
 	return adc_data[8];	
 }
 
+uint16_t TempVoltageGet ()
+{
+	return adc_data[9];	
+}
 
