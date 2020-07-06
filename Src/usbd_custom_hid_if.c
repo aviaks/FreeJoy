@@ -124,7 +124,7 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
     0xa1, 0x01,                    // COLLECTION (Application)
 
 		0x85, JOY_REPORT_ID,				 	 //		REPORT_ID	(JOY_REPORT_ID)	
-
+		
 		// axes data
 		0x05, 0x01,                    // 	USAGE_PAGE (Generic Desktop)
 		0x09, 0x30,                    //   USAGE (X)
@@ -140,7 +140,7 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
     0x75, 0x10,                    //   REPORT_SIZE (16)
     0x95, MAX_AXIS_NUM,       		 //   REPORT_COUNT (MAX_AXIS_NUM)
     0x81, 0x02,                    //   INPUT (Data,Var,Abs)
-		
+
 		// buttons data
 		0x05, 0x09,                    //   USAGE_PAGE (Button)		
     0x19, 0x01,                    //   USAGE_MINIMUM (Button 1)

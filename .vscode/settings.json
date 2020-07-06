@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "algorithm": "c",
-        "random": "c"
+        "random": "c",
+        "flash.h": "c"
     }
 }

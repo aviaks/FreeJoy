@@ -11,12 +11,12 @@
 
 pin_config_t pin_config[USED_PINS_NUM] =
 {
-	{GPIOA, GPIO_PIN_1, 1},					// 1
-	{GPIOA, GPIO_PIN_0, 0},					// 0
-	{GPIOA, GPIO_PIN_4, 4},					// 4
-	{GPIOA, GPIO_PIN_5, 5},					// 5
-	{GPIOA, GPIO_PIN_2, 2},					// 2
 	{GPIOA, GPIO_PIN_3, 3},					// 3
+	{GPIOA, GPIO_PIN_2, 2},					// 2
+	{GPIOA, GPIO_PIN_5, 5},					// 5
+	{GPIOA, GPIO_PIN_4, 4},					// 4
+	{GPIOA, GPIO_PIN_0, 0},					// 0
+	{GPIOA, GPIO_PIN_1, 1},					// 1
 	{GPIOA, GPIO_PIN_6, 6},					// 6
 	{GPIOA, GPIO_PIN_7, 7},					// 7
 	{GPIOA, GPIO_PIN_8, 8},					// 8
@@ -24,23 +24,7 @@ pin_config_t pin_config[USED_PINS_NUM] =
 	{GPIOA, GPIO_PIN_10, 10},				// 10	
 	{GPIOA, GPIO_PIN_15, 15},				// 11
 	{GPIOB, GPIO_PIN_0, 0},					// 12
-	{GPIOB, GPIO_PIN_1, 1},					// 13
-	{GPIOB, GPIO_PIN_3, 3},					// 14
-	{GPIOB, GPIO_PIN_4, 4},					// 15
-	{GPIOB, GPIO_PIN_5, 5},					// 16
-	{GPIOB, GPIO_PIN_6, 6},					// 17
-	{GPIOB, GPIO_PIN_7, 7},					// 18
-	{GPIOB, GPIO_PIN_8, 8},					// 19
-	{GPIOB, GPIO_PIN_9, 9},					// 20
-	{GPIOB, GPIO_PIN_10, 10},				// 21
-	{GPIOB, GPIO_PIN_11, 11},				// 22
-	{GPIOB, GPIO_PIN_12, 12},				// 23
-	{GPIOB, GPIO_PIN_13, 13},				// 24
-	{GPIOB, GPIO_PIN_14, 14},				// 25
-	{GPIOB, GPIO_PIN_15, 15},				// 26
-	{GPIOC, GPIO_PIN_13, 13},				// 27
-	{GPIOC, GPIO_PIN_14, 14},				// 28
-	{GPIOC, GPIO_PIN_15, 15},				// 29
+	// {GPIOB, GPIO_PIN_1, 1},					// 13
 };
 
 void GetPinConfig (pin_config_t ** p_config)
@@ -238,6 +222,7 @@ void GPIO_Init (app_config_t * p_config)
 			GPIO_InitStruct.Pin = pin_config[i].pin;
 			GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 			GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+			GPIO_InitStruct.Pull = GPIO_NOPULL;
 			HAL_GPIO_Init(pin_config[i].port, &GPIO_InitStruct);
 		}
 	}

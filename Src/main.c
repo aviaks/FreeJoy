@@ -37,10 +37,12 @@ uint16_t cal_max[8] = {0};
   * @retval None
   */
 
+// int loops = 0;
 
 void CalibrationLoop() {
   GPIO_PinState state = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5);
-  
+  // loops++;
+
   if (state) {
     if (!calibration_started) {
       for (int axis=0; axis < 8; axis++) {
@@ -65,11 +67,11 @@ void CalibrationLoop() {
       calibration_started = false;
     }
   }
-  // if (calibration_started) {
-  //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-  // } else {
-  //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-  // }
+  if (calibration_started) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+  } else {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+  }
 }
 
 void BatteryMonitoringLoop() {
@@ -145,7 +147,7 @@ int main(void)
 	MX_USB_DEVICE_Init();
 	
   // Uncomment ConfigSet for new chips which flashed first time
-	// ConfigSet((app_config_t *) &init_config);
+	ConfigSet((app_config_t *) &init_config);
 	ConfigGet(&config);
 
 	GPIO_Init(&config);
@@ -162,7 +164,7 @@ int main(void)
 			joy_report.id = JOY_REPORT_ID;
 			
 			ButtonsGet(joy_report.button_data);
-			AnalogGet(joy_report.axis_data);	
+			AnalogGet(joy_report.axis_data);
 
 			USBD_CUSTOM_HID_SendReport(	&hUsbDeviceFS, (uint8_t *)&(joy_report.id), sizeof(joy_report)-sizeof(joy_report.dummy));
     }
@@ -172,8 +174,8 @@ int main(void)
       prev_millis2 = millis;
 
       CalibrationLoop();
-      // BatteryMonitoringLoop();
-      TempMonitoringLoop();
+      BatteryMonitoringLoop();
+      // TempMonitoringLoop();
     }
   }
 }

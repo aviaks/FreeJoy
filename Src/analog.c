@@ -21,14 +21,14 @@ analog_data_t temp_voltage;
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
-	{ADC_CHANNEL_1, 1},	{ADC_CHANNEL_0, 0},
-	{ADC_CHANNEL_4, 4}, {ADC_CHANNEL_5, 5},
-	{ADC_CHANNEL_2, 2}, {ADC_CHANNEL_3, 3},
+	{ADC_CHANNEL_3, 3}, {ADC_CHANNEL_2, 2},
+    {ADC_CHANNEL_5, 5}, {ADC_CHANNEL_4, 4},
+	{ADC_CHANNEL_0, 0},	{ADC_CHANNEL_1, 1},	
 	{ADC_CHANNEL_6, 6}, {ADC_CHANNEL_7, 7},
 };
 
 adc_channel_config_t bat_channel_config = {ADC_CHANNEL_8, 8};
-adc_channel_config_t temp_channel_config = {ADC_CHANNEL_9, 9};
+// adc_channel_config_t temp_channel_config = {ADC_CHANNEL_9, 9};
 
 // Map function with separate action for each half of axis
 static uint32_t map(uint32_t x, 
@@ -157,14 +157,14 @@ void ADC_Init (app_config_t * p_config)
 		_Error_Handler(__FILE__, __LINE__);
 	}
 
-	// Configure temp ADC monitor
-	sConfig.Channel = temp_channel_config.channel;
-	sConfig.Rank = temp_channel_config.number+1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
-	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-	{
-		_Error_Handler(__FILE__, __LINE__);
-	}
+	// // Configure temp ADC monitor
+	// sConfig.Channel = temp_channel_config.channel;
+	// sConfig.Rank = temp_channel_config.number+1;
+	// sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	// if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	// {
+	// 	_Error_Handler(__FILE__, __LINE__);
+	// }
 
 	if(HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&adc_data[0],channels_cnt) != HAL_OK) 
 	{
