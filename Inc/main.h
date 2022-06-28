@@ -16,15 +16,19 @@
 static const app_config_t init_config =
 {
 	.firmware_version = 1,
+
+	.pins[1] = AXIS_ANALOG,						// PA1
+	.pins[0] = AXIS_ANALOG,						// PA0
+
+	.pins[4] = AXIS_ANALOG,						// PA4
+	.pins[5] = AXIS_ANALOG,						// PA5
 	
 	.pins[3] = AXIS_ANALOG,						// PA3
 	.pins[2] = AXIS_ANALOG,						// PA2
-	.pins[5] = AXIS_ANALOG,						// PA5
-	.pins[4] = AXIS_ANALOG,						// PA4
-	.pins[0] = AXIS_ANALOG,						// PA0
-	.pins[1] = AXIS_ANALOG,						// PA1
+
+	.pins[7] = AXIS_ANALOG,						// PA7	
 	.pins[6] = AXIS_ANALOG,						// PA6
-	.pins[7] = AXIS_ANALOG,						// PA7
+	
 	.pins[8] = BUTTON_VCC,						// PA8
 	.pins[9] = BUTTON_VCC,						// PA9
 	.pins[10] = BUTTON_VCC,						// PA10
@@ -98,7 +102,7 @@ static const app_config_t init_config =
 	.axis_config[3].curve_shape.point9 = 0,
 	.axis_config[3].curve_shape.point10 = 0,
 	.axis_config[3].filter = FILTER_NO,
-	.axis_config[3].reverse = true,
+	.axis_config[3].reverse = false,
 	
 	.axis_config[4].calib_min = 0,
 	.axis_config[4].calib_center = 2047,
@@ -132,7 +136,7 @@ static const app_config_t init_config =
 	.axis_config[5].curve_shape.point9 = 0,
 	.axis_config[5].curve_shape.point10 = 0,
 	.axis_config[5].filter = FILTER_NO,
-	.axis_config[5].reverse = true,
+	.axis_config[5].reverse = false,
 	
 	.axis_config[6].calib_min = 0,
 	.axis_config[6].calib_center = 2047,
@@ -149,7 +153,7 @@ static const app_config_t init_config =
 	.axis_config[6].curve_shape.point9 = 0,
 	.axis_config[6].curve_shape.point10 = 0,
 	.axis_config[6].filter = FILTER_NO,
-	.axis_config[6].reverse = true,
+	.axis_config[6].reverse = false,
 	
 	.axis_config[7].calib_min = 0,
 	.axis_config[7].calib_center = 2047,
@@ -166,7 +170,7 @@ static const app_config_t init_config =
 	.axis_config[7].curve_shape.point9 = 0,
 	.axis_config[7].curve_shape.point10 = 0,
 	.axis_config[7].filter = FILTER_NO,
-	.axis_config[7].reverse = true,
+	.axis_config[7].reverse = false,
 	
 	.buttons[0] = BUTTON_NORMAL,
 	.buttons[1] = BUTTON_INVERTED,

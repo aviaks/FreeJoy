@@ -21,10 +21,10 @@ analog_data_t temp_voltage;
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
+	{ADC_CHANNEL_1, 1},	{ADC_CHANNEL_0, 0},	
+    {ADC_CHANNEL_4, 4}, {ADC_CHANNEL_5, 5}, 
 	{ADC_CHANNEL_3, 3}, {ADC_CHANNEL_2, 2},
-    {ADC_CHANNEL_5, 5}, {ADC_CHANNEL_4, 4},
-	{ADC_CHANNEL_0, 0},	{ADC_CHANNEL_1, 1},	
-	{ADC_CHANNEL_6, 6}, {ADC_CHANNEL_7, 7},
+	{ADC_CHANNEL_7, 7}, {ADC_CHANNEL_6, 6}, 
 };
 
 adc_channel_config_t bat_channel_config = {ADC_CHANNEL_8, 8};
