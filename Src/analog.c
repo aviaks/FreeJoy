@@ -213,6 +213,9 @@ void AnalogProcess (app_config_t * p_config)
 		
 		// TODO: Shapes
 		// analog_data[i] = ShapeFunc(i, tmp16);
+		if (tmp16 > 1997 && tmp16 < 2097) {
+			tmp16 = 2048;
+		}
 		analog_data[ch] = tmp16;
 	}	
 }
