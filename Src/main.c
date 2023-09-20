@@ -27,6 +27,8 @@ joy_report_t joy_report;
 bool calibration_started = false;
 
 bool mh_enabled = false;
+GPIO_PinState mh_button_prev_state = GPIO_PIN_RESET;
+uint32_t last_button_state_changed = 0;
 
 uint16_t cal_min[8] = {4095};
 uint16_t cal_max[8] = {0};
@@ -163,6 +165,38 @@ int main(void)
 		if (millis - prev_millis1 > 10) {
 			prev_millis1 = millis;
 			
+      // Power button control
+      if (millis - last_button_state_changed > 20) {
+        GPIO_PinState mh_button = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
+        if (mh_button != mh_button_prev_state) {
+          last_button_state_changed = millis;
+          mh_button_prev_state = mh_button;
+          if (!mh_button) {
+            if (mh_enabled) {
+              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+              mh_enabled = false;
+            } else {
+              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+              HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+              mh_enabled = true;
+            }
+          }
+        }
+      }
+ 
+      // if (!mh_button) {
+      //   if (mh_enabled) {
+      //     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+      //     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+      //     mh_enabled = false;
+      //   } else {
+      //     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+      //     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+      //     mh_enabled = true;
+      //   }
+      // }
+
 			joy_report.id = JOY_REPORT_ID;
 			
 			ButtonsGet(joy_report.button_data);
@@ -176,20 +210,6 @@ int main(void)
       prev_millis2 = millis;
 
       CalibrationLoop();
-
-      GPIO_PinState mh_button = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
-
-      if (!mh_button) {
-        if (mh_enabled) {
-          HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
-          HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
-          mh_enabled = false;
-        } else {
-          HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
-          HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
-          mh_enabled = true;
-        }
-      }
 
       // HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
       // BatteryMonitoringLoop();
