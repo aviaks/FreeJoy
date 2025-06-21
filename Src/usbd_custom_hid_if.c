@@ -144,11 +144,11 @@ __ALIGN_BEGIN static uint8_t CUSTOM_HID_ReportDesc_FS[USBD_CUSTOM_HID_REPORT_DES
 		// buttons data
 		0x05, 0x09,                    //   USAGE_PAGE (Button)		
     0x19, 0x01,                    //   USAGE_MINIMUM (Button 1)
-    0x29, 0x04,                    //   USAGE_MAXIMUM (Button MAX_BUTTONS_NUM)
+    0x29, 0x08,                    //   USAGE_MAXIMUM (Button MAX_BUTTONS_NUM)
     0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
     0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
     0x75, 0x01,                    //   REPORT_SIZE (1)
-    0x95, 0x04,                    //   REPORT_COUNT (MAX_BUTTONS_NUM)
+    0x95, 0x08,                    //   REPORT_COUNT (MAX_BUTTONS_NUM)
     0x81, 0x02,                    //   INPUT (Data,Var,Abs)
 
 		// POV data

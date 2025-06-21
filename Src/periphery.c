@@ -26,9 +26,15 @@ pin_config_t pin_config[USED_PINS_NUM] =
 	{GPIOA, GPIO_PIN_8, 8},					// 8
 	{GPIOA, GPIO_PIN_9, 9},					// 9
 	{GPIOA, GPIO_PIN_10, 10},				// 10	
-	{GPIOA, GPIO_PIN_15, 15},				// 11
-	{GPIOB, GPIO_PIN_0, 0},					// 12
-	// {GPIOB, GPIO_PIN_1, 1},					// 13
+	{GPIOA, GPIO_PIN_15, 15},                // 11
+    
+    {GPIOB, GPIO_PIN_3, 3},                  // 12
+    {GPIOB, GPIO_PIN_4, 4},                  // 13
+    {GPIOB, GPIO_PIN_10, 10},                // 14
+    {GPIOB, GPIO_PIN_12, 12},                // 15
+    
+	{GPIOB, GPIO_PIN_0, 0},					// 16
+	// {GPIOB, GPIO_PIN_1, 1},					// 17
 };
 
 void GetPinConfig (pin_config_t ** p_config)
@@ -106,11 +112,11 @@ void GPIO_Init (app_config_t * p_config)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 	
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+//	GPIO_InitStruct.Pin = GPIO_PIN_12;
+//	GPIO_InitStructs.Mode = GPIO_MODE_OUTPUT_PP;
+//	GPIO_InitStruct.Pull = GPIO_NOPULL;
+//	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+//	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	// Battery LED status
 	// Red
@@ -231,13 +237,13 @@ void GPIO_Init (app_config_t * p_config)
 		}
 	}
 
-#ifdef DEBUG
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-#endif
+//#ifdef DEBUG
+//	GPIO_InitStruct.Pin = GPIO_PIN_12;
+//	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+//	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//	GPIO_InitStruct.Pull = GPIO_NOPULL;
+//	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+//#endif
 }
 
 

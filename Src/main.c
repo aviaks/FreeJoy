@@ -152,7 +152,7 @@ int main(void)
 	MX_USB_DEVICE_Init();
 	
   // Uncomment ConfigSet for new chips which flashed first time
-	// ConfigSet((app_config_t *) &init_config);
+	ConfigSet((app_config_t *) &init_config);
 	ConfigGet(&config);
 
 	GPIO_Init(&config);
