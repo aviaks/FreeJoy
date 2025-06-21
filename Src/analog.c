@@ -21,8 +21,8 @@ analog_data_t temp_voltage;
 
 adc_channel_config_t channel_config[MAX_AXIS_NUM] =
 {
-	{ADC_CHANNEL_1, 1},
     {ADC_CHANNEL_0, 0},
+    {ADC_CHANNEL_1, 1},
     {ADC_CHANNEL_4, 4},
     {ADC_CHANNEL_5, 5},
 //	{ADC_CHANNEL_3, 3},
@@ -221,7 +221,9 @@ void AnalogProcess (app_config_t * p_config)
 			tmp16 = 2048;
 		}
 		analog_data[ch] = tmp16;
-	}	
+	}
+    analog_data[6] = 0;
+    analog_data[7] = 2048;
 }
 
 void AxisResetCalibration (app_config_t * p_config, uint8_t axis_num)

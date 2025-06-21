@@ -11,8 +11,8 @@
 
 pin_config_t pin_config[USED_PINS_NUM] =
 {
-	{GPIOA, GPIO_PIN_1, 1},					// 1
-	{GPIOA, GPIO_PIN_0, 0},					// 0
+    {GPIOA, GPIO_PIN_0, 0},                    // 0
+    {GPIOA, GPIO_PIN_1, 1},					// 1
 
 	{GPIOA, GPIO_PIN_4, 4},					// 4
 	{GPIOA, GPIO_PIN_5, 5},					// 5
@@ -23,15 +23,18 @@ pin_config_t pin_config[USED_PINS_NUM] =
 //	{GPIOA, GPIO_PIN_7, 7},					// 7
 	{GPIOA, GPIO_PIN_6, 6},					// 6
 
-	{GPIOA, GPIO_PIN_8, 8},					// 8
-	{GPIOA, GPIO_PIN_9, 9},					// 9
-	{GPIOA, GPIO_PIN_10, 10},				// 10	
-	{GPIOA, GPIO_PIN_15, 15},                // 11
-    
-    {GPIOB, GPIO_PIN_3, 3},                  // 12
-    {GPIOB, GPIO_PIN_4, 4},                  // 13
-    {GPIOB, GPIO_PIN_10, 10},                // 14
+    {GPIOA, GPIO_PIN_15, 15},                // 11
+    {GPIOA, GPIO_PIN_10, 10},                // 10
+
     {GPIOB, GPIO_PIN_12, 12},                // 15
+    {GPIOB, GPIO_PIN_10, 10},                // 14
+
+    {GPIOA, GPIO_PIN_9, 9},                    // 9
+    {GPIOA, GPIO_PIN_8, 8},                    // 8
+
+    {GPIOB, GPIO_PIN_4, 4},                  // 13
+    {GPIOB, GPIO_PIN_3, 3},                  // 12
+
     
 	{GPIOB, GPIO_PIN_0, 0},					// 16
 	// {GPIOB, GPIO_PIN_1, 1},					// 17

@@ -49,7 +49,7 @@ void CalibrationLoop() {
 
   if (state) {
     if (!calibration_started) {
-      for (int axis=0; axis < MAX_AXIS_NUM; axis++) {
+      for (int axis=0; axis < 8; axis++) {
         config.axis_config[axis].calib_max = 0;
         config.axis_config[axis].calib_min = 4095;
         config.axis_config[axis].calib_center = AnalogRawGet(axis);
@@ -57,7 +57,7 @@ void CalibrationLoop() {
       calibration_started = true;
     }
 
-    for (int axis=0; axis < MAX_AXIS_NUM; axis++) {
+    for (int axis=0; axis < 8; axis++) {
       if (AnalogRawGet(axis) > config.axis_config[axis].calib_max) {
         config.axis_config[axis].calib_max = AnalogRawGet(axis);
       } else if (AnalogRawGet(axis) < config.axis_config[axis].calib_min) {
@@ -152,7 +152,7 @@ int main(void)
 	MX_USB_DEVICE_Init();
 	
   // Uncomment ConfigSet for new chips which flashed first time
-	ConfigSet((app_config_t *) &init_config);
+//	ConfigSet((app_config_t *) &init_config);
 	ConfigGet(&config);
 
 	GPIO_Init(&config);
