@@ -17,8 +17,8 @@ static const app_config_t init_config =
 {
 	.firmware_version = 1,
 
-	.pins[1] = AXIS_ANALOG,						// PA1
 	.pins[0] = AXIS_ANALOG,						// PA0
+    .pins[1] = AXIS_ANALOG,                        // PA1
 
 	.pins[4] = AXIS_ANALOG,						// PA4
 	.pins[5] = AXIS_ANALOG,						// PA5
@@ -29,15 +29,19 @@ static const app_config_t init_config =
 //	.pins[7] = AXIS_ANALOG,						// PA7
 	.pins[3] = AXIS_ANALOG,						// PA6
 	
-	.pins[6] = BUTTON_VCC,						// PA8
-	.pins[7] = BUTTON_VCC,						// PA9
-	.pins[8] = BUTTON_VCC,						// PA10
-	.pins[9] = BUTTON_VCC,						// PA15
-    
+
     .pins[10] = BUTTON_VCC,                     // PB3
     .pins[11] = BUTTON_VCC,                     // PB4
+
+    .pins[6] = BUTTON_VCC,                      // PA8
+    .pins[7] = BUTTON_VCC,                      // PA9
+    
     .pins[12] = BUTTON_VCC,                     // PB10
     .pins[13] = BUTTON_VCC,                     // PB12
+
+    .pins[8] = BUTTON_VCC,                      // PA10
+    .pins[9] = BUTTON_VCC,                      // PA15
+
     
 	.pins[14] = ADC_IN,							// PB0
 	// .pins[10] = ADC_IN,							// PB1
@@ -144,39 +148,39 @@ static const app_config_t init_config =
 	.axis_config[5].filter = FILTER_NO,
 	.axis_config[5].reverse = true,
 	
-//	.axis_config[6].calib_min = 0,
-//	.axis_config[6].calib_center = 2047,
-//	.axis_config[6].calib_max = 4095,
-//	.axis_config[6].autocalib = 0,
-//	.axis_config[6].curve_shape.point1 = 0,
-//	.axis_config[6].curve_shape.point2 = 0,
-//	.axis_config[6].curve_shape.point3 = 0,
-//	.axis_config[6].curve_shape.point4 = 0,
-//	.axis_config[6].curve_shape.point5 = 0,
-//	.axis_config[6].curve_shape.point6 = 0,
-//	.axis_config[6].curve_shape.point7 = 0,
-//	.axis_config[6].curve_shape.point8 = 0,
-//	.axis_config[6].curve_shape.point9 = 0,
-//	.axis_config[6].curve_shape.point10 = 0,
-//	.axis_config[6].filter = FILTER_NO,
-//	.axis_config[6].reverse = false,
-//
-//	.axis_config[7].calib_min = 0,
-//	.axis_config[7].calib_center = 2047,
-//	.axis_config[7].calib_max = 4095,
-//	.axis_config[7].autocalib = 0,
-//	.axis_config[7].curve_shape.point1 = 0,
-//	.axis_config[7].curve_shape.point2 = 0,
-//	.axis_config[7].curve_shape.point3 = 0,
-//	.axis_config[7].curve_shape.point4 = 0,
-//	.axis_config[7].curve_shape.point5 = 0,
-//	.axis_config[7].curve_shape.point6 = 0,
-//	.axis_config[7].curve_shape.point7 = 0,
-//	.axis_config[7].curve_shape.point8 = 0,
-//	.axis_config[7].curve_shape.point9 = 0,
-//	.axis_config[7].curve_shape.point10 = 0,
-//	.axis_config[7].filter = FILTER_NO,
-//	.axis_config[7].reverse = false,
+	.axis_config[6].calib_min = 0,
+	.axis_config[6].calib_center = 2047,
+	.axis_config[6].calib_max = 4095,
+	.axis_config[6].autocalib = 0,
+	.axis_config[6].curve_shape.point1 = 0,
+	.axis_config[6].curve_shape.point2 = 0,
+	.axis_config[6].curve_shape.point3 = 0,
+	.axis_config[6].curve_shape.point4 = 0,
+	.axis_config[6].curve_shape.point5 = 0,
+	.axis_config[6].curve_shape.point6 = 0,
+	.axis_config[6].curve_shape.point7 = 0,
+	.axis_config[6].curve_shape.point8 = 0,
+	.axis_config[6].curve_shape.point9 = 0,
+	.axis_config[6].curve_shape.point10 = 0,
+	.axis_config[6].filter = FILTER_NO,
+	.axis_config[6].reverse = false,
+
+	.axis_config[7].calib_min = 0,
+	.axis_config[7].calib_center = 2047,
+	.axis_config[7].calib_max = 4095,
+	.axis_config[7].autocalib = 0,
+	.axis_config[7].curve_shape.point1 = 0,
+	.axis_config[7].curve_shape.point2 = 0,
+	.axis_config[7].curve_shape.point3 = 0,
+	.axis_config[7].curve_shape.point4 = 0,
+	.axis_config[7].curve_shape.point5 = 0,
+	.axis_config[7].curve_shape.point6 = 0,
+	.axis_config[7].curve_shape.point7 = 0,
+	.axis_config[7].curve_shape.point8 = 0,
+	.axis_config[7].curve_shape.point9 = 0,
+	.axis_config[7].curve_shape.point10 = 0,
+	.axis_config[7].filter = FILTER_NO,
+	.axis_config[7].reverse = false,
 	
 	.buttons[0] = BUTTON_INVERTED,
 	.buttons[1] = BUTTON_INVERTED,
