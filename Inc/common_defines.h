@@ -12,8 +12,8 @@
 #define DEBUG
 
 #define FIRMWARE_VERSION				0x0001
-#define USED_PINS_NUM						17					// constant for BluePill and BlackPill boards
-#define MAX_AXIS_NUM						8					// max 8
+#define USED_PINS_NUM						15					// constant for BluePill and BlackPill boards
+#define MAX_AXIS_NUM						6   				// max 8
 #define MAX_BUTTONS_NUM					8					// power of 2, max 128
 #define MAX_POVS_NUM						0						// max 4
 #define MAX_ENCODERS_NUM				0					// max 16

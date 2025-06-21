@@ -17,10 +17,10 @@ pin_config_t pin_config[USED_PINS_NUM] =
 	{GPIOA, GPIO_PIN_4, 4},					// 4
 	{GPIOA, GPIO_PIN_5, 5},					// 5
 
-	{GPIOA, GPIO_PIN_3, 3},					// 3
+//	{GPIOA, GPIO_PIN_3, 3},					// 3
 	{GPIOA, GPIO_PIN_2, 2},					// 2
 
-	{GPIOA, GPIO_PIN_7, 7},					// 7
+//	{GPIOA, GPIO_PIN_7, 7},					// 7
 	{GPIOA, GPIO_PIN_6, 6},					// 6
 
 	{GPIOA, GPIO_PIN_8, 8},					// 8

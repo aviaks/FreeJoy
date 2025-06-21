@@ -30,8 +30,8 @@ bool mh_enabled = false;
 GPIO_PinState mh_button_prev_state = GPIO_PIN_RESET;
 uint32_t last_button_state_changed = 0;
 
-uint16_t cal_min[8] = {4095};
-uint16_t cal_max[8] = {0};
+uint16_t cal_min[MAX_AXIS_NUM] = {4095};
+uint16_t cal_max[MAX_AXIS_NUM] = {0};
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -49,7 +49,7 @@ void CalibrationLoop() {
 
   if (state) {
     if (!calibration_started) {
-      for (int axis=0; axis < 8; axis++) {
+      for (int axis=0; axis < MAX_AXIS_NUM; axis++) {
         config.axis_config[axis].calib_max = 0;
         config.axis_config[axis].calib_min = 4095;
         config.axis_config[axis].calib_center = AnalogRawGet(axis);
@@ -57,7 +57,7 @@ void CalibrationLoop() {
       calibration_started = true;
     }
 
-    for (int axis=0; axis < 8; axis++) {
+    for (int axis=0; axis < MAX_AXIS_NUM; axis++) {
       if (AnalogRawGet(axis) > config.axis_config[axis].calib_max) {
         config.axis_config[axis].calib_max = AnalogRawGet(axis);
       } else if (AnalogRawGet(axis) < config.axis_config[axis].calib_min) {
